@@ -115,23 +115,57 @@ public class Perceptron {
 	
 	public static void main(String[] args) throws IOException {
 		
-		System.out.println("Enter the folder locations for (i)ham training set (ii) ham validation set (iii) ham test set and similarly for spam(in the same order)");
+		System.out.println("Enter the dataset to use. Enter 1 or 2 or 3.\n");
+		Scanner scanner = new Scanner(System.in);
+		int choice = scanner.nextInt();
+		System.out.println("Do you want to see the accuracy on the validation set? Type yes if so. Perceptron and Logistic Regression are trained using only trained data for this case.\n");
+		String showValidation = scanner.nextLine();
+		System.out.println("Enter the number of iterations you would like to use.\n");
+		int noOfIterations = scanner.nextInt();
+		scanner.close();
 		
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-		List<String> parameters = Arrays.asList(bufferedReader.readLine().split(" "));
-
-		if(parameters.size()!=6) {
-			System.out.println("Not the required number of parameters. Exiting.");
-			return;
+		String hamTrainingFolder = "";
+		String hamValidationFolder = "";
+		String hamTestFolder = "";
+		
+		String spamTrainingFolder = "";
+		String spamValidationFolder = "";
+		String spamTestFolder = "";
+		
+		if(choice == 1) {
+			
+			hamTrainingFolder = "src/hw2_train/train/ham/training_set";
+			hamValidationFolder = "src/hw2_train/train/ham/validation_set";
+			hamTestFolder = "src/hw2_test/test/ham/";
+			
+			spamTrainingFolder = "src/hw2_train/train/spam/training_set";
+			spamValidationFolder = "src/hw2_train/train/spam/validation_set";
+			spamTestFolder = "src/hw2_test/test/spam";
+			
+		}
+		else if(choice ==2) {
+			hamTrainingFolder = "src/enron1_train/enron1/train/ham/training_set";
+			hamValidationFolder = "src/enron1_train/enron1/train/ham/validation_set";
+			hamTestFolder = "src/enron1_test/enron1/test/ham";
+			
+			spamTrainingFolder = "src/enron1_train/enron1/train/spam/training_set";;
+			spamValidationFolder = "src/enron1_train/enron1/train/spam/validation_set";;
+			spamTestFolder = "src/enron1_test/enron1/test/spam";
+		}
+		else if(choice == 3) {
+			hamTrainingFolder = "src/enron4_train/enron4/train/ham/training_set";
+			hamValidationFolder = "src/enron4_train/enron4/train/ham/validation_set";
+			hamTestFolder = "src/enron4_test/enron4/test/ham";
+			
+			spamTrainingFolder = "src/enron4_train/enron4/train/spam/training_set";;
+			spamValidationFolder = "src/enron4_train/enron4/train/spam/validation_set";;
+			spamTestFolder = "src/enron4_test/enron4/test/spam";
 		}
 		
-		String hamTrainingFolder = parameters.get(0);
-		String hamValidationFolder = parameters.get(1);
-		String hamTestFolder = parameters.get(2);
-		
-		String spamTrainingFolder = parameters.get(4);
-		String spamValidationFolder = parameters.get(5);
-		String spamTestFolder = parameters.get(6);
+		else {
+			System.out.println("Wrong choice. Restart the program.");
+			return;
+		}
 		
 		Map<List<Double>, Integer> dataSet = new HashMap<>();
 		Set<String> vocabulary = new HashSet<>();
@@ -171,35 +205,53 @@ public class Perceptron {
 		Map<String, Integer> spamFirstEmailMap = spamEmailFeatureMaps.get(0);
 		int spamSize = spamFirstEmailMap.size();
 		
-		int noOfIterations = 1000;
-		Perceptron perceptron = new Perceptron(hamSize);
-		try {
-			perceptron.train(dataSet,noOfIterations);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-//		String resultString = perceptron.getWeightsString();
-//		String resultFilePath = "src/hw2_train/train/perceptronweights/all_files_result_attempt_1_02-03-18-02-18.txt/";
-//		writeResultToFile(resultString, resultFilePath);
-		dataSet.clear();
-		
 		folderPath = hamValidationFolder; //"src/hw2_train/train/ham/validation_set";
 		List<Map<String, Integer>> validationHamEmailFeatureMaps = getEmailFeatureMaps(folderPath, vocabulary);
 		folderPath = spamValidationFolder; //"src/hw2_train/train/spam/validation_set";
 		List<Map<String, Integer>> validationSpamEmailFeatureMaps = getEmailFeatureMaps(folderPath, vocabulary);
 		
-		addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
-		addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
 		
-		int validationHamTests = validationHamEmailFeatureMaps.size();
-		int validationSpamTests = validationSpamEmailFeatureMaps.size();
-		List<Integer> validationHamTestResults = perceptron.testDataSet(dataSet);
-		int validationHits = validationHamTestResults.get(0);
-//		int hamTestMisses = testHamTestResults.get(1);
+		Perceptron perceptron;
+		if (showValidation.equals("yes")) {
+			perceptron = new Perceptron(hamSize);
+			try {
+				perceptron.train(dataSet, noOfIterations);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+			dataSet.clear();
+			addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
+			addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
+			int validationHamTests = validationHamEmailFeatureMaps.size();
+			int validationSpamTests = validationSpamEmailFeatureMaps.size();
+			List<Integer> validationHamTestResults = perceptron.testDataSet(dataSet);
+			int validationHits = validationHamTestResults.get(0);
+			//		int hamTestMisses = testHamTestResults.get(1);
+			System.out.println("No of iterations is equal to:" + noOfIterations);
+			double accuracyOfValidationSet = (double) validationHits
+					/ (double) (validationHamTests + validationSpamTests);
+			System.out.println(
+					"Accuracy of Validation Set(on both Ham and Spam combined): " + accuracyOfValidationSet);
+		}
 		
 		dataSet.clear();
 		
+		//training a new perceptron on both training and validation combined
+		addToDataSet(dataSet, hamEmailFeatureMaps, 1);
+		addToDataSet(dataSet, spamEmailFeatureMaps, -1);
+		addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
+		addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
+		
+		Perceptron trainingAndValidationPerceptron = new Perceptron(hamSize);
+		
+		try {
+			trainingAndValidationPerceptron.train(dataSet, noOfIterations);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		dataSet.clear();
+		//creating test feature maps and testing them on the trained perceptron above
+		System.out.println("Using both training and validation to perform perceptron training for test data");
 		folderPath = hamTestFolder;//"src/hw2_test/test/ham/";
 		List<Map<String, Integer>> testHamEmailFeatureMaps = getEmailFeatureMaps(folderPath, vocabulary);
 		folderPath = spamTestFolder; //"src/hw2_test/test/spam";
@@ -210,19 +262,14 @@ public class Perceptron {
 		
 		addToDataSet(dataSet, testHamEmailFeatureMaps, 1);
 		
-		List<Integer> testHamTestResults = perceptron.testDataSet(dataSet);
+		List<Integer> testHamTestResults = trainingAndValidationPerceptron.testDataSet(dataSet);
 		int hamTestHits = testHamTestResults.get(0);
 		
 		dataSet.clear();
 		addToDataSet(dataSet, testSpamEmailFeatureMaps, -1);
-		List<Integer> testSpamTestResults = perceptron.testDataSet(dataSet);
+		List<Integer> testSpamTestResults = trainingAndValidationPerceptron.testDataSet(dataSet);
 		
 		int spamTestHits = testSpamTestResults.get(0);
-		
-		System.out.println("No of iterations is equal to:" + noOfIterations);
-		
-		double accuracyOfValidationSet = (double)validationHits / (double)(validationHamTests + validationSpamTests);
-		System.out.println("Accuracy of Validation Set(on both Ham and Spam combined): " + accuracyOfValidationSet);
 		
 		double accuracyOfTestSet = (double)hamTestHits / (double)(testHamTests);
 		System.out.println("Accuracy of Test Ham Set: " + accuracyOfTestSet);
@@ -230,9 +277,11 @@ public class Perceptron {
 		accuracyOfTestSet = (double)spamTestHits / (double)(testSpamTests);
 		System.out.println("Accuracy of Test Spam Set: " + accuracyOfTestSet);
 		
+		//Logistic Regression
+		
 	}
 
-	private static List<Map<String, Integer>> getEmailFeatureMaps(String folderPath, Set<String> vocabulary) {
+	public static List<Map<String, Integer>> getEmailFeatureMaps(String folderPath, Set<String> vocabulary) {
 		Map<Set<String>, List<Map<String, Integer>>> vocabularyAndEmailsWordCounts = extractVocabularyAndEmailsWordCounts(folderPath);
 		Map.Entry<Set<String>, List<Map<String, Integer>>> mapFirstEntry = vocabularyAndEmailsWordCounts.entrySet().iterator().next();
 		
@@ -265,7 +314,7 @@ public class Perceptron {
 			wordsToBeRemoved.clear();
 		}
 	}
-	private static void writeResultToFile(String resultString, String resultFilePath) {
+	public static void writeResultToFile(String resultString, String resultFilePath) {
 		try {
 			PrintWriter fileWriter = new PrintWriter(resultFilePath, "UTF-8");
 			fileWriter.println(resultString);
@@ -276,7 +325,7 @@ public class Perceptron {
 		}
 	}
 
-	private static void addToDataSet(Map<List<Double>, Integer> dataSet,
+	public static void addToDataSet(Map<List<Double>, Integer> dataSet,
 			List<Map<String, Integer>> hamEmailFeatureMaps, int cls) {
 		List<Double> dataPoint;
 		for(Map<String, Integer> featureMap: hamEmailFeatureMaps) {

@@ -1,0 +1,16 @@
+		LogisticRegressionClassifier lrClassifier = new LogisticRegressionClassifier(hamSize);
+		
+		try {
+			
+			lrClassifier.train(dataSet, noOfIterations, 0.1);
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		List<Integer> validationLRResults = lrClassifier.testDataSet(dataSet);
+		int resultsSize = validationLRResults.size();
+		
+		int positiveHits = validationLRResults.get(resultsSize - 4);
+		int positiveMisses = validationLRResults.get(resultsSize - 3);
+		int negativeHits = validationLRResults.get(resultsSize - 2);
+		int negativeMisses = validationLRResults.get(resultsSize - 1);
