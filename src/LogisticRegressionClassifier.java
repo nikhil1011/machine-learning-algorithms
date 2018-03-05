@@ -16,32 +16,52 @@ public class LogisticRegressionClassifier {
 			throw new Exception("data set should not be empty");
 		}
 		
-		double learningRate = 0.1;
+		double learningRate = 0.01;
 		for(int j = 0; j<iterations; j++) {
-			for(List<Double> dataPoint: dataSet.keySet()) {
-				int outputClass = classifyDataPoint(dataPoint);
-				int targetClass = dataSet.get(dataPoint);
-				for(int i = 1; i<weights.size(); i++) {
-					weights.set(i, weights.get(i) + (learningRate * (outputClass - targetClass) * dataPoint.get(i - 1)));
+
+//			for(Double feature: dataPoint) {
+//				delta += feature*difference;
+//			}
+//			delta *= learningRate;
+			for(int i = 0; i<weights.size(); i++) {
+				double delta = 0;
+				double penalty = 0;
+				double updatedWeight = 0;
+				
+				for(List<Double> dataPoint: dataSet.keySet()) {
+					Integer targetClass = dataSet.get(dataPoint);
+					double probabilityOfDataPoint = classifyDataPoint(dataPoint);
+					if(probabilityOfDataPoint>=0.5) {
+						probabilityOfDataPoint = 1;
+					}
+					else {
+						probabilityOfDataPoint = 0;
+					}
+					double difference = targetClass - probabilityOfDataPoint;
+					if(i == 0) {
+						delta += difference;
+					}
+					else {
+						delta += dataPoint.get(i - 1)*difference;
+					}
 				}
+				
+				delta *= learningRate;
+				penalty = learningRate * lambda * weights.get(i);
+				updatedWeight = weights.get(i) + delta - penalty;
+				weights.set(i, updatedWeight);
 			}
 		}
 	}
 	
-	public int classifyDataPoint(List<Double> dataPoint) {
+	public double classifyDataPoint(List<Double> dataPoint) {
 		double sigmoid = weights.get(0);
 		
 		for(int i = 1; i<weights.size(); i++) {
 			sigmoid += weights.get(i)*dataPoint.get(i-1);
 		}
 		sigmoid = sigmoidFunction(sigmoid);
-		
-		if(sigmoid>(1-sigmoid)) {
-			return 1;
-		}
-		else {
-			return -1;
-		}
+		return sigmoid;
 	}
 	
 	public List<Integer> testDataSet(Map<List<Double>, Integer> dataSet){
@@ -53,8 +73,15 @@ public class LogisticRegressionClassifier {
 		int negativeMisses = 0;
 		
 		for(List<Double> dataPoint: dataSet.keySet()) {
-			int outputClass = classifyDataPoint(dataPoint);
-
+			double outputClassProb = classifyDataPoint(dataPoint);
+			int outputClass;
+			if(outputClassProb>(1-outputClassProb)) {
+				outputClass = 1;
+			}
+			else {
+				outputClass = -1;
+			}
+			
 			int targetClass = dataSet.get(dataPoint);
 			if(targetClass == 1) {
 				if(outputClass == 1) {

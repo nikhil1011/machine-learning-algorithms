@@ -108,79 +108,79 @@ public class EntryClass {
 		folderPath = spamValidationFolder; //"src/hw2_train/train/spam/validation_set";
 		List<Map<String, Integer>> validationSpamEmailFeatureMaps = Perceptron.getEmailFeatureMaps(folderPath, vocabulary);
 		
-		System.out.println("No of iterations is equal to:" + noOfIterations);
+		System.out.println("No of iterations is equal to: " + noOfIterations);
 		
-//		System.out.println("-------Begin Perceptron-------");
-//		
-//		Perceptron perceptron;
-//		if (showValidation.equals("yes")) {
-//			System.out.println("**Validation data accuracy for Perceptron**");
-//			perceptron = new Perceptron(hamSize);
-//			try {
-//				perceptron.train(dataSet, noOfIterations);
-//			} catch (Exception e) {
-//				System.out.println(e.getMessage());
-//			}
-//			dataSet.clear();
-//			Perceptron.addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
-//			Perceptron.addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
-//			int validationHamTests = validationHamEmailFeatureMaps.size();
-//			int validationSpamTests = validationSpamEmailFeatureMaps.size();
-//			List<Integer> validationHamTestResults = perceptron.testDataSet(dataSet);
-//			int validationHits = validationHamTestResults.get(0);
-//			//		int hamTestMisses = testHamTestResults.get(1);
-//			double accuracyOfValidationSet = (double) validationHits
-//					/ (double) (validationHamTests + validationSpamTests);
-//			System.out.println(
-//					"Accuracy of Validation Set(on both Ham and Spam combined): " + accuracyOfValidationSet);
-//		}
-//		
-//		dataSet.clear();
-//		
-//		//training a new perceptron on both training and validation combined
-//		Perceptron.addToDataSet(dataSet, hamEmailFeatureMaps, 1);
-//		Perceptron.addToDataSet(dataSet, spamEmailFeatureMaps, -1);
-//		Perceptron.addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
-//		Perceptron.addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
-//		
-//		Perceptron trainingAndValidationPerceptron = new Perceptron(hamSize);
-//		
-//		try {
-//			trainingAndValidationPerceptron.train(dataSet, noOfIterations);
-//		} catch (Exception e) {
-//			System.out.println(e.getMessage());
-//			e.printStackTrace();
-//		}
-//		dataSet.clear();
-//		
-//		//creating test feature maps and testing them on the trained perceptron above
-//		System.out.println("Using both training and validation feature vectors to perform perceptron training for test data");
-//		folderPath = hamTestFolder;//"src/hw2_test/test/ham/";
-//		List<Map<String, Integer>> testHamEmailFeatureMaps = Perceptron.getEmailFeatureMaps(folderPath, vocabulary);
-//		folderPath = spamTestFolder; //"src/hw2_test/test/spam";
-//		List<Map<String, Integer>> testSpamEmailFeatureMaps = Perceptron.getEmailFeatureMaps(folderPath, vocabulary);
-//		
-//		int testHamTests = testHamEmailFeatureMaps.size();
-//		int testSpamTests = testSpamEmailFeatureMaps.size();
-//		
-//		Perceptron.addToDataSet(dataSet, testHamEmailFeatureMaps, 1);
-//		
-//		List<Integer> testHamTestResults = trainingAndValidationPerceptron.testDataSet(dataSet);
-//		int hamTestHits = testHamTestResults.get(0);
-//		
-//		dataSet.clear();
-//		Perceptron.addToDataSet(dataSet, testSpamEmailFeatureMaps, -1);
-//		List<Integer> testSpamTestResults = trainingAndValidationPerceptron.testDataSet(dataSet);
-//		
-//		int spamTestHits = testSpamTestResults.get(0);
-//		
-//		double accuracyOfTestSet = (double)hamTestHits / (double)(testHamTests);
-//		System.out.println("Accuracy of Test Ham Set: " + accuracyOfTestSet);
-//		
-//		accuracyOfTestSet = (double)spamTestHits / (double)(testSpamTests);
-//		System.out.println("Accuracy of Test Spam Set: " + accuracyOfTestSet);
-//		dataSet.clear();
-//		System.out.println("--------End Perceptron----------");
+		System.out.println("-------Begin Perceptron-------");
+		
+		Perceptron perceptron;
+		if (showValidation.equals("yes")) {
+			System.out.println("**Validation data accuracy for Perceptron**");
+			perceptron = new Perceptron(hamSize);
+			try {
+				perceptron.train(dataSet, noOfIterations);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+			dataSet.clear();
+			Perceptron.addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
+			Perceptron.addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
+			int validationHamTests = validationHamEmailFeatureMaps.size();
+			int validationSpamTests = validationSpamEmailFeatureMaps.size();
+			List<Integer> validationHamTestResults = perceptron.testDataSet(dataSet);
+			int validationHits = validationHamTestResults.get(0);
+			//		int hamTestMisses = testHamTestResults.get(1);
+			double accuracyOfValidationSet = (double) validationHits
+					/ (double) (validationHamTests + validationSpamTests);
+			System.out.println(
+					"Accuracy of Validation Set(on both Ham and Spam combined): " + accuracyOfValidationSet);
+		}
+		
+		dataSet.clear();
+		
+		//training a new perceptron on both training and validation combined
+		Perceptron.addToDataSet(dataSet, hamEmailFeatureMaps, 1);
+		Perceptron.addToDataSet(dataSet, spamEmailFeatureMaps, -1);
+		Perceptron.addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
+		Perceptron.addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
+		
+		Perceptron trainingAndValidationPerceptron = new Perceptron(hamSize);
+		
+		try {
+			trainingAndValidationPerceptron.train(dataSet, noOfIterations);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		dataSet.clear();
+		
+		//creating test feature maps and testing them on the trained perceptron above
+		System.out.println("Using both training and validation feature vectors to perform perceptron training for test data");
+		folderPath = hamTestFolder;//"src/hw2_test/test/ham/";
+		List<Map<String, Integer>> testHamEmailFeatureMaps = Perceptron.getEmailFeatureMaps(folderPath, vocabulary);
+		folderPath = spamTestFolder; //"src/hw2_test/test/spam";
+		List<Map<String, Integer>> testSpamEmailFeatureMaps = Perceptron.getEmailFeatureMaps(folderPath, vocabulary);
+		
+		int testHamTests = testHamEmailFeatureMaps.size();
+		int testSpamTests = testSpamEmailFeatureMaps.size();
+		
+		Perceptron.addToDataSet(dataSet, testHamEmailFeatureMaps, 1);
+		
+		List<Integer> testHamTestResults = trainingAndValidationPerceptron.testDataSet(dataSet);
+		int hamTestHits = testHamTestResults.get(0);
+		
+		dataSet.clear();
+		Perceptron.addToDataSet(dataSet, testSpamEmailFeatureMaps, -1);
+		List<Integer> testSpamTestResults = trainingAndValidationPerceptron.testDataSet(dataSet);
+		
+		int spamTestHits = testSpamTestResults.get(0);
+		
+		double accuracyOfTestSet = (double)hamTestHits / (double)(testHamTests);
+		System.out.println("Accuracy of Test Ham Set: " + accuracyOfTestSet);
+		
+		accuracyOfTestSet = (double)spamTestHits / (double)(testSpamTests);
+		System.out.println("Accuracy of Test Spam Set: " + accuracyOfTestSet);
+		dataSet.clear();
+		System.out.println("--------End Perceptron----------");
 		
 		System.out.println("-------Begin Logistic Regression---------");
 		LogisticRegressionClassifier lrClassifier = new LogisticRegressionClassifier(hamSize);
@@ -209,9 +209,35 @@ public class EntryClass {
 			int positiveMisses = validationLRResults.get(resultsSize - 3);
 			int negativeHits = validationLRResults.get(resultsSize - 2);
 			int negativeMisses = validationLRResults.get(resultsSize - 1);
-			
-			System.out.println("done");
+			double accuracy = (double)(positiveHits + negativeHits)/(positiveHits + positiveMisses + negativeHits + negativeMisses);
+			System.out.println("Accuracy of Validation set: " + accuracy);
 		}
+		
+		dataSet.clear();
+		
+		Perceptron.addToDataSet(dataSet, hamEmailFeatureMaps, 1);
+		Perceptron.addToDataSet(dataSet, spamEmailFeatureMaps, -1);
+		Perceptron.addToDataSet(dataSet, validationHamEmailFeatureMaps, 1);
+		Perceptron.addToDataSet(dataSet, validationSpamEmailFeatureMaps, -1);
+		
+		LogisticRegressionClassifier lrTestClassifier = new LogisticRegressionClassifier(hamSize);
+		
+		try {
+			lrTestClassifier.train(dataSet, noOfIterations, lambda);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		List<Integer> testLRResults = lrTestClassifier.testDataSet(dataSet);
+		int resultsSize = testLRResults.size();
+		
+		int positiveHits = testLRResults.get(resultsSize - 4);
+		int positiveMisses = testLRResults.get(resultsSize - 3);
+		int negativeHits = testLRResults.get(resultsSize - 2);
+		int negativeMisses = testLRResults.get(resultsSize - 1);
+		double accuracy = (double)(positiveHits + negativeHits)/(positiveHits + positiveMisses + negativeHits + negativeMisses);
+		System.out.println("Accuracy of Test set: " + accuracy);
 	}
 
 }
